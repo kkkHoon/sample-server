@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <title>Survey</title>
+        <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    </head>
+
+    <body>
+        <br><br>
+
+        <form id="SurveyForm" role="form">
+            Gender : 
+            <input type="radio" name="radio_btn" value="Man">Man</input>
+            <input type="radio" name="radio_btn" value="Woman">Woman</input>
+            <br>
+            Age :
+            <input type="number" id="age"> <br>
+            <button type="submit">Send!</button>
+        </form>
+
+        <br><br>
+        <div id='result'></div>
+
+        <script type="text/javascript">
+            var API_SERVER = 'http://localhost:3000';
+
+            $('#SurveyForm').submit(function(event){
+                event.preventDefault();
+
+                var gender = $(':input:radio[name=radio_btn]:checked').val();
+                var age = $('#age').val();
+
+                $.ajax({
+                    url: API_SERVER + '/'
+                    , crossDomain: true
+                    , dataType: "json"
+                    , type: 'POST'
+                    , data: {'gender' : gender, 'age' : age}
+                    , success: success
+                    , error : function(jqXHR, textStatus, errorThrown){
+                        alert(errorThrown);
+                    }
+                });
+            })
+
+            var success = function(data){
+               // $('#result').html(data);
+               console.log(data);
+            }
+        </script>
+    </body>
+</html>

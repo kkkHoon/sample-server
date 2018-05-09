@@ -1,6 +1,14 @@
 var express = require('express');
-var app = express();
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var survey_mdoel = require('./model');
+
+mongoose.connect('mongodb://localhost/survey_data').then(()=>{
+    console.log("Connected to Database");
+}).catch((err) => {
+    console.log("Not connected to Database Error! ", err);
+});
+var app = express();
 
 app.use(function (req, res, next) {
     console.log('Time:', Date.now());
@@ -8,49 +16,19 @@ app.use(function (req, res, next) {
 })
 
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(express.static('public'));
 
-app.get('/', function(req, res) {
-    res.send('Hello World!');
+app.get('/', function(req, res){
+    res.send('hahaha');
 })
-
-app.get('/user/:userId',function (req, res) {
-    console.log(req.params.userId + '의 정보를 가져옵니다');
-    var user = {
-        userId: 100,
-        name: 'hoon',
-        email: 'hhh0912_gmail.com',
-        company: 'aaa'
-      };  
-    res.send(user);
-});
-
-app.get('/user/search', function (req, res) {
-
-    console.log('데이터 확인', req.query.name);
-
-    var users = [{
-      userId: 13579,
-      name: 'John',
-      email: 'yohany_AT_gmail.com',
-      company: 'KossLAB'
-    }];
-  
-    res.send({result: users});
-  });
-
-app.post('/user', function (req, res) {
+app.post('/', function (req, res) {
     console.log('데이터 확인', req.body);
-    res.send({state: 'OK', data: req.body});
-});
 
-app.put('/user/:userId', function (req, res) {
-    console.log('데이터 수정', req.body);
-    res.send({state: 'OK', data: req.body});
-});
-  
-app.delete('/user/:userId', function (req, res) {
-    console.log('데이터 삭제', req.body);
-    res.send({state: 'OK', data: req.body});
+    var newSurvey = survey_mdoel({gender: req.body.gender, age:req.body.age});
+    newSurvey.save(function(err){
+        if(err) console.log(err);
+        res.send({'text':'hahaha'});
+    });
 });
 
 app.listen(3000, function() {
