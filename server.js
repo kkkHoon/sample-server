@@ -21,13 +21,18 @@ app.use(express.static('public'));
 app.get('/', function(req, res){
     res.send('hahaha');
 })
+
 app.post('/', function (req, res) {
     console.log('데이터 확인', req.body);
 
     var newSurvey = survey_mdoel({gender: req.body.gender, age:req.body.age});
     newSurvey.save(function(err){
         if(err) console.log(err);
-        res.send({'text':'hahaha'});
+
+        survey_mdoel.find({}, 'gender age', function(err, result){
+            if(err) console.log(err);
+            res.send(result);
+        })
     });
 });
 
